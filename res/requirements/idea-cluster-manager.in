@@ -1,0 +1,4 @@
+-r idea-sdk.in
+supervisor~=4.0
+python-ldap~=3.0
+ldappool~=3.0
