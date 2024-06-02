@@ -26,7 +26,7 @@ from containres.ideavirtualdesktopcontroller.cli.sessions import (
 
 
 @click.group(CLICK_SETTINGS)
-@click.version_option(version=containres.containres.ideavirtualdesktopcontroller.__version__)
+@click.version_option(version=containres.ideavirtualdesktopcontroller.__version__)
 def main():
     """
     idea virtual desktop controller - manage virtual desktops in your cluster

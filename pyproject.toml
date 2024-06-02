@@ -95,3 +95,9 @@ testpaths = ["tests"]
 pythonpath = [
   "."
 ]
+
+[tool.poetry.scripts]
+resctl-ideaclustermanager = "containres.ideaclustermanager.cli.cli_main:main"
+resctl-ideavirtualdesktopcontroller = "containres.ideavirtualdesktopcontroller.cli.cli_main:main"
+resserver-ideaclustermanager = "containres.ideaclustermanager.app.app_main:main"
+resserver-ideavirtualdesktopcontroller = "containres.ideavirtualdesktopcontroller.app.app_main:main"

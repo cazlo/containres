@@ -17,7 +17,7 @@ services:
 #      - LANG=en_US.UTF-8
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
-    command: ["poetry", "run", "python", "-m", "containres.ideaclustermanager.app.app_main"]
+    command: ["poetry", "run", "resserver-ideaclustermanager"]
   virtual-desktop-controller:
     image: containres:latest
     build:
@@ -32,7 +32,7 @@ services:
 #      - LANG=en_US.UTF-8
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
-    command: ["poetry", "run", "python", "-m", "containres.ideavirtualdesktopcontroller.app.app_main"]
+    command: ["poetry", "run", "resserver-ideavirtualdesktopcontroller"]
 
 #########   UI   #########
   cluster-manager-frontend:
