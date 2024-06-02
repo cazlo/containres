@@ -74,7 +74,9 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "sass": "sass src/Sass:src/Css --watch --no-source-map"
+    "sass": "sass src/Sass:src/Css --watch --no-source-map",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix"
   },
   "resolutions": {
     "minimatch": ">=3.0.5",

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
 #########    backend services   #########
@@ -36,12 +34,13 @@ services:
 
 #########   UI   #########
   cluster-manager-frontend:
-    image: containres:latest
+    image: containres-webapp:latest
     build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: containres-frontend
-    command: ["echo", "not implemented yet", "&&", "sleep", "100000"]
+      context: webapp
+      dockerfile: webapp/Dockerfile
+    container_name: containres-webapp
+    ports:
+      - 8080:80
 
 #########   AWS emulation   #########
 #  dynamodb-local:
