@@ -22,7 +22,7 @@ from containres.ideasdk.protocols import (
 )
 from containres.ideasdk.server import SocaServer, SocaServerOptions
 from containres.ideasdk.utils import Utils
-from ideatestutils import MockConfig
+from tests.unit.ideatestutils import MockConfig
 
 from containres.ideadatamodel import (
     SocaBaseModel,

@@ -11,7 +11,7 @@
 
 import pytest
 from containres.ideasdk.context import SocaContext, SocaContextOptions
-from ideatestutils import MockConfig
+from tests.unit.ideatestutils import MockConfig
 
 
 @pytest.fixture()

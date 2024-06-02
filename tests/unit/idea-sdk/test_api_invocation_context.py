@@ -22,11 +22,11 @@ from containres.ideasdk.auth.api_authorization_service_base import ApiAuthorizat
 from containres.ideasdk.context import SocaContext, SocaContextOptions
 from containres.ideasdk.protocols import TokenServiceProtocol
 from containres.ideasdk.utils import GroupNameHelper, Utils
-from ideatestutils.api_authorization_service.mock_api_authorization_service import (
+from tests.unit.ideatestutils.api_authorization_service.mock_api_authorization_service import (
     MockApiAuthorizationService,
 )
-from ideatestutils.config.mock_config import MockConfig
-from ideatestutils.token_service.mock_token_service import MockTokenService
+from tests.unit.ideatestutils.config.mock_config import MockConfig
+from tests.unit.ideatestutils.token_service.mock_token_service import MockTokenService
 
 from containres.ideadatamodel import constants, errorcodes, exceptions
 

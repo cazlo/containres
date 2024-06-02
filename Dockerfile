@@ -4,11 +4,6 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # os patch
 RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
-# Install required packages for locale configuration
-RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/*
-
-# Generate and set locale
-RUN dpkg-reconfigure locales
 
 # Create a non-root user and group
 RUN groupadd -r appuser && useradd -m -r -g appuser appuser
@@ -19,8 +14,8 @@ WORKDIR /app
 # Install Poetry
 RUN pip install poetry
 
-# Ensure Poetry is in the PATH
-#ENV PATH="/root/.local/bin:${PATH}"
+# install deps for python-ldap
+RUN apt-get update && apt-get install -y build-essential ldap-utils libldap2-dev libsasl2-dev&& rm -rf /var/lib/apt/lists/*
 
 # Copy the pyproject.toml and poetry.lock files to the container
 COPY pyproject.toml poetry.lock ./
@@ -41,6 +36,8 @@ USER appuser
 
 # Install the application itself
 RUN poetry install
+# todo should really copy to a layer which does not have big build-only deps like gcc (build-essential)
+
 # Set the locale environment variables which RES is tested against/uses in ops
 ENV LC_ALL C.UTF-8
 ENV LC_CTYPE=C.UTF-8

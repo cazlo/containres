@@ -276,7 +276,7 @@ class SocaContext(SocaContextProtocol):
         return self._options.module_id
 
     def module_version(self) -> Optional[str]:
-        return ideasdk.__version__
+        return containres.ideasdk.__version__
 
     def cluster_timezone(self) -> str:
         return self.config().get_string('cluster.timezone', default='America/Los_Angeles')

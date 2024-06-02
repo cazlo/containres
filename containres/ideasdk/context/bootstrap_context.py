@@ -70,7 +70,7 @@ class BootstrapContext:
 
     @property
     def module_version(self) -> str:
-        return ideasdk.__version__
+        return containres.ideasdk.__version__
 
     @property
     def app_deploy_dir(self) -> str:

@@ -691,7 +691,7 @@ class Utils:
         :return: boto3.Session
         """
         botocore_session = botocore.session.Session(profile=aws_profile)
-        botocore_session.user_agent_extra = f'AwsSolution/{constants.AWS_SOLUTION_ID}/{ideasdk.__version__}'
+        botocore_session.user_agent_extra = f'AwsSolution/{constants.AWS_SOLUTION_ID}/{containres.ideasdk.__version__}'
         return boto3.Session(botocore_session=botocore_session, region_name=aws_region)
 
     @staticmethod

@@ -1,8 +1,5 @@
 # Use the official Python image with the exact version you need
 FROM python:3.9.19-slim
-
-#ENV LC_ALL en_US.UTF-8.UTF-8
-#ENV LC_CTYPE en_US.UTF-8.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
 
 # os patch
@@ -17,8 +14,10 @@ WORKDIR /app
 # Install Poetry
 RUN pip install poetry
 
-# Ensure Poetry is in the PATH
-#ENV PATH="/root/.local/bin:${PATH}"
+# install deps for python-ldap
+RUN apt-get update && apt-get install -y build-essential ldap-utils libldap2-dev libsasl2-dev&& rm -rf /var/lib/apt/lists/*
+# install deps for dynamodb local
+RUN apt-get update && apt-get install -y default-jre-headless && rm -rf /var/lib/apt/lists/*
 
 # Copy the pyproject.toml and poetry.lock files to the container
 COPY pyproject.toml poetry.lock ./
