@@ -25,7 +25,7 @@ from containres.ideadatamodel import (
 from containres.ideasdk.utils import Utils
 
 class FileSystemAPI(BaseAPI):
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self.context = context
         self.config = self.context.config()
         self.logger = self.context.logger("shared-filesystem")

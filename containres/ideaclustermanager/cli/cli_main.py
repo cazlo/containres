@@ -24,7 +24,7 @@ import click
 
 
 @click.group(CLICK_SETTINGS)
-@click.version_option(version=ideaclustermanager.__version__)
+@click.version_option(version=containres.ideaclustermanager.__version__)
 def main():
     """
     cluster manager

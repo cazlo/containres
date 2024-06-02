@@ -49,7 +49,7 @@ from typing import Optional, Dict
 
 class ClusterManagerApiInvoker(ApiInvokerProtocol):
 
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self._context = context
         self.app_api = SocaAppAPI(context)
         self.file_browser_api = FileBrowserAPI(context)

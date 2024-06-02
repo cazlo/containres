@@ -26,7 +26,7 @@ import containres.ideaclustermanager
 
 class SnapshotsAPI(BaseAPI):
 
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self.context = context
 
         self.SCOPE_WRITE = f'{self.context.module_id()}/write'

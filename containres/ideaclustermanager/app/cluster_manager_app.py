@@ -9,7 +9,7 @@
 #  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
 #  and limitations under the License.
 
-import ideasdk.app
+import containres.ideasdk.app
 from containres.ideasdk.auth import TokenService, TokenServiceOptions
 from containres.ideadatamodel import constants
 from containres.ideasdk.client.evdi_client import EvdiClient
@@ -53,12 +53,12 @@ from containres.ideaclustermanager.app.shared_filesystem.shared_filesystem_servi
 from typing import Optional
 
 
-class ClusterManagerApp(ideasdk.app.SocaApp):
+class ClusterManagerApp(containres.ideasdk.app.SocaApp):
     """
     cluster manager app
     """
 
-    def __init__(self, context: ideaclustermanager.AppContext,
+    def __init__(self, context: containres.ideaclustermanager.AppContext,
                  config_file: str,
                  env_file: str = None,
                  config_overrides_file: str = None,

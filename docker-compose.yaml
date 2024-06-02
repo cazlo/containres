@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+
+#########    backend services   #########
+  cluster-manager:
+    image: containres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cluster-manager
+    environment:
+      - IDEA_CLUSTER_NAME=foo
+      - IDEA_MODULE_ID=bar
+      - IDEA_MODULE_SET=baz
+      - AWS_DEFAULT_REGION=us-west-1
+#      - LANG=en_US.UTF-8
+#      - LANGUAGE=en_US:en
+#      - LC_ALL=en_US.UTF-8
+    command: ["poetry", "run", "python", "-m", "containres.ideaclustermanager.app.app_main"]
+  virtual-desktop-controller:
+    image: containres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: containres-virtual-desktop-controller
+    environment:
+      - IDEA_CLUSTER_NAME=foo
+      - IDEA_MODULE_ID=bar
+      - IDEA_MODULE_SET=baz
+      - AWS_DEFAULT_REGION=us-west-1
+#      - LANG=en_US.UTF-8
+#      - LANGUAGE=en_US:en
+#      - LC_ALL=en_US.UTF-8
+    command: ["poetry", "run", "python", "-m", "containres.ideavirtualdesktopcontroller.app.app_main"]
+
+#########   UI   #########
+  cluster-manager-frontend:
+    image: containres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: containres-frontend
+    command: ["echo", "not implemented yet", "&&", "sleep", "100000"]
+
+#########   AWS emulation   #########
+#  dynamodb-local:
+#    image: todo
+
+# S3, cognito, etc are possibilities.
+
+#  tests:
+#    image: containres:latest
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.test
+#    container_name: your_project_tests
+#    environment:
+#      - LANG=en_US.UTF-8
+#      - LANGUAGE=en_US:en
+#      - LC_ALL=en_US.UTF-8
+#    command: ["poetry", "run", "pytest"]

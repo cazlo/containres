@@ -17,7 +17,7 @@ import time
 
 class SyncAllGroupsTask(BaseTask):
 
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self.context = context
         self.logger = context.logger(self.get_name())
 
@@ -34,7 +34,7 @@ class SyncAllGroupsTask(BaseTask):
 
 class SyncAllUsersTask(BaseTask):
 
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self.context = context
         self.logger = context.logger(self.get_name())
 
@@ -50,7 +50,7 @@ class SyncAllUsersTask(BaseTask):
 
 class SyncFromAD(BaseTask):
 
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self.context = context
         self.logger = context.logger(self.get_name())
 

@@ -34,7 +34,7 @@ class AwsEndpoints:
     @property
     def data(self) -> Dict:
         if self._data is None:
-            content = pkg_resources.read_text(package=ideasdk.aws, resource=AWS_ENDPOINTS_FILE)
+            content = pkg_resources.read_text(package=containres.ideasdk.aws, resource=AWS_ENDPOINTS_FILE)
             self._data = Utils.from_json(content)
         return self._data
 

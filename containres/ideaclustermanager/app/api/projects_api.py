@@ -32,7 +32,7 @@ from containres.ideasdk.utils import Utils, ApiUtils
 
 class ProjectsAPI(BaseAPI):
 
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self.context = context
         self.logger = context.logger('projects')
         self.SCOPE_WRITE = f'{self.context.module_id()}/write'

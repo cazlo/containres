@@ -40,7 +40,7 @@ DEFAULT_HTTP_HEADERS = {
 
 class WebPortal:
 
-    def __init__(self, context: ideaclustermanager.AppContext, server: SocaServer):
+    def __init__(self, context: containres.ideaclustermanager.AppContext, server: SocaServer):
         self.context = context
         self.server = server
         self.logger = context.logger('web-portal')

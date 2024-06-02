@@ -67,6 +67,7 @@ class ClusterConfigDB(DynamoDBStreamSubscriber):
             options=AWSClientProviderOptions(
                 region=self.aws_region,
                 profile=self.aws_profile
+                # todo need some way to specify endpoints here to support localstack style endpoint_url injection for local runtime/test case
             )
         )
 

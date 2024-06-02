@@ -39,7 +39,7 @@ from containres.ideaclustermanager.app.accounts.user_home_directory import UserH
 
 class AuthAPI(BaseAPI):
 
-    def __init__(self, context: ideaclustermanager.AppContext):
+    def __init__(self, context: containres.ideaclustermanager.AppContext):
         self.context = context
 
     def initiate_auth(self, context: ApiInvocationContext):

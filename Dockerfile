@@ -41,5 +41,4 @@ RUN poetry install
 # Set the locale environment variables which RES is tested against/uses in ops
 ENV LC_ALL C.UTF-8
 ENV LC_CTYPE=C.UTF-8
-# todo nothing runs in app land yet
-CMD ["poetry", "run", "python", "-m", "your_project.main"]
+CMD ["poetry", "run", "python", "-m", "containres.ideaclustermanager.app.app_main"]

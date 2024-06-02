@@ -23,7 +23,7 @@ import click
 import traceback
 
 
-@click.version_option(version=ideaclustermanager.__version__)
+@click.version_option(version=containres.ideaclustermanager.__version__)
 @launch_decorator()
 def main(**kwargs):
     """
@@ -37,7 +37,7 @@ def main(**kwargs):
         aws_region = EnvironmentUtils.aws_default_region(required=True)
 
         ClusterManagerApp(
-            context=ideaclustermanager.AppContext(
+            context=containres.ideaclustermanager.AppContext(
                 options=SocaContextOptions(
                     cluster_name=cluster_name,
                     module_name=constants.MODULE_CLUSTER_MANAGER,
