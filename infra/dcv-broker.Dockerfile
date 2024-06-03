@@ -16,6 +16,7 @@ RUN dcv-session-manager-broker --help
 
 COPY dcv-broker/dcv-broker-overrides.sh /usr/share/dcv-session-manager-broker/bin/dcv-session-manager-broker.sh
 RUN chmod +x /usr/share/dcv-session-manager-broker/bin/dcv-session-manager-broker.sh
+HEALTHCHECK --interval=5s --timeout=10s --start-period=1s --retries=30 CMD curl --insecure --fail https://127.0.0.1:8446 || exit 1
 
 # todo might need to do some pre-run configuration based on env vars todo things like overwrite aws region
 CMD /usr/share/dcv-session-manager-broker/bin/dcv-session-manager-broker.sh
