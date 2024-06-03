@@ -31,6 +31,13 @@ services:
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
     command: ["poetry", "run", "resserver-ideavirtualdesktopcontroller"]
+#########    backend DCV services   #########
+  dcv-broker:
+    image: dcv-broker:latest
+    command: ["sleep", "6000"] #todo
+  dcv-gateway:
+    image: dcv-gateway:latest
+    command: ["sleep", "6000"] #todo
 
 #########   UI   #########
   cluster-manager-frontend:
@@ -38,6 +45,8 @@ services:
     build:
       context: webapp
       dockerfile: webapp/Dockerfile
+#    environment:
+#      - RES_TEST_MODE=True
     container_name: containres-webapp
     ports:
       - 8080:80

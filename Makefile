@@ -21,6 +21,13 @@ build-webapp:
 build-test-webapp:
 	docker build -f infra/webapp-dev.Dockerfile -t containres-webapp-test webapp
 
+.PHONY: build-dcv-broker
+build-dcv-broker:
+	docker build -f infra/dcv-broker.Dockerfile -t  dcv-broker infra/dcv-config
+
+.PHONY: build-dcv-gateway
+build-dcv-gateway:
+	docker build -f infra/dcv-gateway.Dockerfile -t  dcv-gateway infra/dcv-config
 
 
 .PHONY: test
