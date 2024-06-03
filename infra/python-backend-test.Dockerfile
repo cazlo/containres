@@ -47,5 +47,5 @@ RUN poetry install
 ENV LC_ALL C.UTF-8
 ENV LC_CTYPE=C.UTF-8
 # Specify the entry point for the container to run tests
-ENTRYPOINT ["poetry", "run", "pytest"]
+ENTRYPOINT ["poetry", "run", "pytest", "--cov"]
 
