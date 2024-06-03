@@ -34,7 +34,10 @@ services:
 #########    backend DCV services   #########
   dcv-broker:
     image: dcv-broker:latest
-    command: ["sleep", "6000"] #todo
+    ports:
+      - 8444:8444
+      - 8445:8445
+      - 8446:8446
   dcv-gateway:
     image: dcv-gateway:latest
     command: ["sleep", "6000"] #todo

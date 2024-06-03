@@ -1,38 +1,39 @@
 #!/bin/bash
 
 set -x
-# source environment. at this point, PATH should have been already updated
-# and must contain soca python installation
-source /etc/environment
-source /root/bootstrap/infra.cfg
-
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "${SCRIPT_DIR}/../common/bootstrap_common.sh"
+# all values below sourced from default settings in idea-administrator/resources/config/templates/global-settings/settings.yml
 
 # DCV Broker
-DCV_GPG_KEY="{{ context.config.get_string('global-settings.package_config.dcv.gpg_key', required=True) }}"
-DCV_SESSION_MANAGER_BROKER_NOARCH_VERSION="{{ context.config.get_string('global-settings.package_config.dcv.broker.linux.al2_rhel_centos7.version', required=True) }}"
-DCV_SESSION_MANAGER_BROKER_URL="{{ context.config.get_string('global-settings.package_config.dcv.broker.linux.al2_rhel_centos7.url', required=True) }}"
-DCV_SESSION_MANAGER_BROKER_SHA256_HASH="{{ context.config.get_string('global-settings.package_config.dcv.broker.linux.al2_rhel_centos7.sha256sum', required=True) }}"
+DCV_GPG_KEY=https://d1uj6qtbmh3dt5.cloudfront.net/NICE-GPG-KEY
+#"{{ context.config.get_string('global-settings.package_config.dcv.gpg_key', required=True) }}"
+DCV_SESSION_MANAGER_BROKER_NOARCH_VERSION=2023.0.392-1.el7.noarch
+#"{{ context.config.get_string('global-settings.package_config.dcv.broker.linux.al2_rhel_centos7.version', required=True) }}"
+DCV_SESSION_MANAGER_BROKER_URL=https://d1uj6qtbmh3dt5.cloudfront.net/2023.0/SessionManagerBrokers/nice-dcv-session-manager-broker-2023.0.392-1.el7.noarch.rpm
+#"{{ context.config.get_string('global-settings.package_config.dcv.broker.linux.al2_rhel_centos7.url', required=True) }}"
+DCV_SESSION_MANAGER_BROKER_SHA256_HASH=fc0f29de9d2c9d3799a6b2235c01ba48159fede6bb5e7500cb8cf121a27471be
+#"{{ context.config.get_string('global-settings.package_config.dcv.broker.linux.al2_rhel_centos7.sha256sum', required=True) }}"
 
 timestamp=$(date +%s)
-clean_hostname=$(hostname -s)
-AWS_REGION={{ context.aws_region }}
-CLIENT_TO_BROKER_PORT="{{ context.config.get_string('virtual-desktop-controller.dcv_broker.client_communication_port', required=True) }}"
-AGENT_TO_BROKER_PORT="{{ context.config.get_string('virtual-desktop-controller.dcv_broker.agent_communication_port', required=True) }}"
-GATEWAY_TO_BROKER_PORT="{{ context.config.get_string('virtual-desktop-controller.dcv_broker.gateway_communication_port', required=True) }}"
-SESSION_TOKEN_DURATION="{{ context.config.get_string('virtual-desktop-controller.dcv_broker.session_token_validity', required=True) }}"
-DYNAMODB_TABLE_RCU="{{ context.config.get_string('virtual-desktop-controller.dcv_broker.dynamodb_table.read_capacity.min_units', default=5) }}"
-DYNAMODB_TABLE_WCU="{{ context.config.get_string('virtual-desktop-controller.dcv_broker.dynamodb_table.write_capacity.min_units', default=5) }}"
+#clean_hostname=$(hostname -s)
+AWS_REGION="us-west-2"
+#{{ context.aws_region }} todo this seems like the only thing likely to be injected at runtime here
+CLIENT_TO_BROKER_PORT=8444
+#"{{ context.config.get_string('virtual-desktop-controller.dcv_broker.client_communication_port', required=True) }}"
+AGENT_TO_BROKER_PORT=8445
+#"{{ context.config.get_string('virtual-desktop-controller.dcv_broker.agent_communication_port', required=True) }}"
+GATEWAY_TO_BROKER_PORT=8446
+#"{{ context.config.get_string('virtual-desktop-controller.dcv_broker.gateway_communication_port', required=True) }}"
+SESSION_TOKEN_DURATION=1440
+# in minutes
+#"{{ context.config.get_string('virtual-desktop-controller.dcv_broker.session_token_validity', required=True) }}"
+DYNAMODB_TABLE_RCU=5
+#"{{ context.config.get_string('virtual-desktop-controller.dcv_broker.dynamodb_table.read_capacity.min_units', default=5) }}"
+DYNAMODB_TABLE_WCU=5
+#"{{ context.config.get_string('virtual-desktop-controller.dcv_broker.dynamodb_table.write_capacity.min_units', default=5) }}"
 
-MODULE_ID="{{ context.module_id }}"
+MODULE_ID="virtual-desktop-controller"
+#"{{ context.module_id }}" looks to be from ideadatamodel.constants.MODULE_VIRTUAL_DESKTOP_CONTROLLER
 STAGING_AREA_RELATIVE_PATH='staging_area'
-
-function restart_dcv_broker() {
-  log_info "dcv session manager broker started"
-  systemctl restart dcv-session-manager-broker
-  log_info "dcv session manager broker complete"
-}
 
 function clean_staging_area() {
   rm -rf '${STAGING_AREA_RELATIVE_PATH}'
@@ -78,12 +79,12 @@ enable-authorization-server = false
 enable-authorization = true
 enable-agent-authorization = false
 
-enable-persistence = true
-persistence-db = dynamodb
-dynamodb-region = ${AWS_REGION}
-dynamodb-table-rcu = ${DYNAMODB_TABLE_RCU}
-dynamodb-table-wcu = ${DYNAMODB_TABLE_WCU}
-dynamodb-table-name-prefix = ${IDEA_CLUSTER_NAME}.${MODULE_ID}.dcv-broker.
+enable-persistence = false
+#persistence-db = dynamodb
+#dynamodb-region = ${AWS_REGION}
+#dynamodb-table-rcu = ${DYNAMODB_TABLE_RCU}
+#dynamodb-table-wcu = ${DYNAMODB_TABLE_WCU}
+#dynamodb-table-name-prefix = ${IDEA_CLUSTER_NAME}.${MODULE_ID}.dcv-broker.
 # jdbc-connection-url = jdbc:mysql://database-mysql.rds.amazonaws.com:3306/database-mysql
 # jdbc-user = admin
 # jdbc-password = password
@@ -124,11 +125,11 @@ broker-to-broker-port = 47100
 cli-to-broker-port = 47200
 broker-to-broker-bind-host = 0.0.0.0
 broker-to-broker-discovery-port = 47500
-# broker-to-broker-discovery-addresses = 127.0.0.1:47500
+broker-to-broker-discovery-addresses = 127.0.0.1:47500
 # broker-to-broker-discovery-multicast-group = 127.0.0.1
 # broker-to-broker-discovery-multicast-port = 47400
-broker-to-broker-discovery-aws-region = ${AWS_REGION}
-broker-to-broker-discovery-aws-alb-target-group-arn = ${BROKER_CLIENT_TARGET_GROUP_ARN}
+#broker-to-broker-discovery-aws-region = ${AWS_REGION}
+#broker-to-broker-discovery-aws-alb-target-group-arn = ${BROKER_CLIENT_TARGET_GROUP_ARN}
 broker-to-broker-distributed-memory-max-size-mb = 4096
 # broker-to-broker-key-store-file = test_security/KeyStore.jks
 # broker-to-broker-key-store-pass = dcvsm1
@@ -137,7 +138,7 @@ broker-to-broker-connection-pass = dcvsm-pass
 
 # Metrics
 metrics-fleet-name-dimension = ${IDEA_CLUSTER_NAME}
-enable-cloud-watch-metrics = true
+enable-cloud-watch-metrics = false
 # if cloud-watch-region is not provided, the region is taken from EC2 IMDS
 # cloud-watch-region = ${AWS_REGION}
 session-manager-working-path = /var/lib/dcvsmbroker
@@ -146,6 +147,18 @@ session-manager-working-path = /var/lib/dcvsmbroker
 session-screenshot-max-height = 600
 session-screenshot-max-width = 800
 " > /etc/dcv-session-manager-broker/session-manager-broker.properties
+# todo note above the following values have been over-written from default RES values for local runtime context:
+# - enable-persistence
+# - dynamodb-region
+# - dynamodb-table-rcu
+# - dynamodb-table-wcu
+# - dynamodb-table-name-prefix
+# - broker-to-broker-discovery-addresses
+# - broker-to-broker-discovery-aws-region
+# - broker-to-broker-discovery-aws-region
+# - broker-to-broker-discovery-aws-alb-target-group-arn
+# - enable-cloud-watch-metrics
+# todo we should setup a config map for the prod deployment in AWS which is this file but with the original RES values
 
   chown root:dcvsmbroker /etc/dcv-session-manager-broker/session-manager-broker.properties
   chmod 640 /etc/dcv-session-manager-broker/session-manager-broker.properties
@@ -172,13 +185,17 @@ session-screenshot-max-width = 800
       echo "java networking properties configuration completed"
   fi
 
-  restart_dcv_broker
 }
 
 function configure_dcv_broker() {
   echo "Configure dcv broker started"
-  provider_url="{{ context.config.get_string('identity-provider.cognito.provider_url', required=True) }}"
-  dcv-session-manager-broker register-auth-server --url "${provider_url}/.well-known/jwks.json"
+  if [[ -n "${COGNITO_PROVIDER_URL}" ]]; then
+#  "{{ context.config.get_string('identity-provider.cognito.provider_url', required=True) }}"
+    dcv-session-manager-broker register-auth-server --url "${COGNITO_PROVIDER_URL}/.well-known/jwks.json"
+  else
+    echo "COGNITO_PROVIDER_URL not found!"
+    exit 1
+  fi
   echo "Configure dcv broker complete"
 }
 
@@ -203,7 +220,8 @@ function notify_controller() {
 
 install_dcv_broker_package
 configure_dcv_broker_properties
-verify_broker_installation
-configure_dcv_broker
-clean_staging_area
-notify_controller
+#verify_broker_installation
+# todo below should be done only on startup, not image build
+#configure_dcv_broker
+#clean_staging_area
+#notify_controller
