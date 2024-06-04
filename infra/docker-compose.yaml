@@ -7,11 +7,19 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: cluster-manager
+    depends_on:
+      - localstack
     environment:
       - IDEA_CLUSTER_NAME=foo
       - IDEA_MODULE_ID=bar
       - IDEA_MODULE_SET=baz
       - AWS_DEFAULT_REGION=us-west-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - S3_ENDPOINT_URL=http://localstack:4566
+      - DYNAMODB_ENDPOINT_URL=http://localstack:4566
+      - SQS_ENDPOINT_URL=http://localstack:4566
+      - COGNITO_ENDPOINT_URL=http://localstack:4566
 #      - LANG=en_US.UTF-8
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
@@ -22,11 +30,19 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: containres-virtual-desktop-controller
+    depends_on:
+      - localstack
     environment:
       - IDEA_CLUSTER_NAME=foo
       - IDEA_MODULE_ID=bar
       - IDEA_MODULE_SET=baz
       - AWS_DEFAULT_REGION=us-west-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - S3_ENDPOINT_URL=http://localstack:4566
+      - DYNAMODB_ENDPOINT_URL=http://localstack:4566
+      - SQS_ENDPOINT_URL=http://localstack:4566
+      - COGNITO_ENDPOINT_URL=http://localstack:4566
 #      - LANG=en_US.UTF-8
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
@@ -61,8 +77,18 @@ services:
 #########   AWS emulation   #########
 #  dynamodb-local:
 #    image: todo
-
 # S3, cognito, etc are possibilities.
+  localstack:
+    image: localstack/localstack:3.4.0
+    ports:
+      - "4566:4566"  # LocalStack gateway
+      - "4510-4559:4510-4559"  # external svc range
+    environment:
+      - SERVICES=s3,dynamodb,sqs,cognito,cloudwatch,secretsmanager,efs
+      - DEBUG=1
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
 
 #  tests:
 #    image: containres:latest

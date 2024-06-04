@@ -36,6 +36,7 @@ def main(**kwargs):
         module_id = EnvironmentUtils.idea_module_id(required=True)
         module_set = EnvironmentUtils.idea_module_set(required=True)
         aws_region = EnvironmentUtils.aws_default_region(required=True)
+        # todo allow injection of endpoints here, probably via env var
 
         VirtualDesktopControllerApp(
             context=containres.ideavirtualdesktopcontroller.AppContext(

@@ -46,7 +46,7 @@ network:
     {{ utils.to_yaml(public_subnet_ids) | indent(4) }}
   load_balancer_subnets:
     {{ utils.to_yaml(load_balancer_subnet_ids) | indent(4) }}
-  infrastructure_host_subnets: 
+  infrastructure_host_subnets:
     {{ utils.to_yaml(infrastructure_host_subnet_ids) | indent(4) }}
   {%- else %}
   max_azs: 3
@@ -76,6 +76,8 @@ network:
   # It is admin responsibility to provide and configure all VPC endpoints in the config.
   # VPC endpoints will NOT be provisioned by the Cluster CDK Stack.
   # Format for providing VPC endpoints is as below:
+
+# todo prefer to add this info here to facilitate localstack
   # vpc_gateway_endpoints:
   #   - s3
   #   - dynamodb

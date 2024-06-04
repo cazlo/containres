@@ -46,10 +46,12 @@ class ClusterConfig(SocaConfig, DynamoDBStreamSubscriber):
         self.logger = logger
 
         self.module_info = None
+        # todo need to inject endpoint url below for dynamodb
         self.db = ClusterConfigDB(
             cluster_name=cluster_name,
             aws_region=aws_region,
             aws_profile=aws_profile,
+            # create_database=True, todo based on some param
             create_subscription=create_subscription,
             cluster_config_subscriber=self,
             logger=logger

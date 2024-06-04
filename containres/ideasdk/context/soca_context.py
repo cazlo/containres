@@ -119,6 +119,7 @@ class SocaContext(SocaContextProtocol):
                 if Utils.is_empty(options.module_set):
                     raise exceptions.invalid_params('module_set is required')
 
+                # todo here we should inject endpoint urls to cluster config
                 self._config = ClusterConfig(
                     cluster_name=options.cluster_name,
                     aws_region=options.aws_region,
