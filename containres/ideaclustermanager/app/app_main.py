@@ -35,7 +35,13 @@ def main(**kwargs):
         module_id = EnvironmentUtils.idea_module_id(required=True)
         module_set = EnvironmentUtils.idea_module_set(required=True)
         aws_region = EnvironmentUtils.aws_default_region(required=True)
-        # todo allow injection of endpoints here, probably via env var
+        aws_client_endpoints = {
+            "s3": EnvironmentUtils.s3_endpoint(required=False),
+            "dynamodb": EnvironmentUtils.dynamodb_endpoint(required=False),
+            "sqs": EnvironmentUtils.sqs_endpoint(required=False),
+            "cognito": EnvironmentUtils.cognito_endpoint(required=False),
+            "kinesis": EnvironmentUtils.kinesis_endpoint(required=False),
+        }
 
         ClusterManagerApp(
             context=containres.ideaclustermanager.AppContext(
@@ -53,6 +59,7 @@ def main(**kwargs):
                     enable_distributed_lock=True,
                     enable_leader_election=True,
                     enable_metrics=True,
+                    aws_client_endpoints=aws_client_endpoints,
                 )
             ),
             **kwargs

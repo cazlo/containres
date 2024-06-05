@@ -7,17 +7,21 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: cluster-manager
+#    ports: todo
+#      - 8080:8080
     depends_on:
-      - localstack
+      terraform:
+        condition: service_completed_successfully
     environment:
-      - IDEA_CLUSTER_NAME=foo
-      - IDEA_MODULE_ID=bar
-      - IDEA_MODULE_SET=baz
+      - IDEA_CLUSTER_NAME=res-dev
+      - IDEA_MODULE_ID=cluster-manager
+      - IDEA_MODULE_SET=app,config
       - AWS_DEFAULT_REGION=us-west-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - S3_ENDPOINT_URL=http://localstack:4566
       - DYNAMODB_ENDPOINT_URL=http://localstack:4566
+      - KINESIS_ENDPOINT_URL=http://localstack:4566
       - SQS_ENDPOINT_URL=http://localstack:4566
       - COGNITO_ENDPOINT_URL=http://localstack:4566
 #      - LANG=en_US.UTF-8
@@ -30,17 +34,24 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: containres-virtual-desktop-controller
+#    ports: todo
+#      - 8080:8080
     depends_on:
-      - localstack
+      terraform:
+        condition: service_completed_successfully
+      cluster-manager:
+#        condition: service_healthy todo
+        condition: service_started
     environment:
-      - IDEA_CLUSTER_NAME=foo
-      - IDEA_MODULE_ID=bar
-      - IDEA_MODULE_SET=baz
+      - IDEA_CLUSTER_NAME=res-dev
+      - IDEA_MODULE_ID=virtual-desktop-controller
+      - IDEA_MODULE_SET=app,config
       - AWS_DEFAULT_REGION=us-west-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - S3_ENDPOINT_URL=http://localstack:4566
       - DYNAMODB_ENDPOINT_URL=http://localstack:4566
+      - KINESIS_ENDPOINT_URL=http://localstack:4566
       - SQS_ENDPOINT_URL=http://localstack:4566
       - COGNITO_ENDPOINT_URL=http://localstack:4566
 #      - LANG=en_US.UTF-8
@@ -84,12 +95,22 @@ services:
       - "4566:4566"  # LocalStack gateway
       - "4510-4559:4510-4559"  # external svc range
     environment:
-      - SERVICES=s3,dynamodb,sqs,cognito,cloudwatch,secretsmanager,efs
+      - SERVICES=s3,dynamodb,sqs,cognito,cloudwatch,secretsmanager,efs,iam
       - DEBUG=1
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-
+  terraform:
+    image: hashicorp/terraform:1.8.4
+    working_dir: /workspace
+    volumes:
+      - "./terraform:/workspace"
+    depends_on:
+      localstack:
+        condition: service_healthy
+    entrypoint: /bin/sh
+    command:
+      - ./localstack-deploy.sh
 #  tests:
 #    image: containres:latest
 #    build:

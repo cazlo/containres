@@ -66,6 +66,7 @@ class SocaContextOptions(SocaBaseModel):
     locale: Optional[str]
 
     config: Optional[Dict[str, Any]]
+    aws_client_endpoints: Optional[Dict[str, str]]
 
     @staticmethod
     def default() -> 'SocaContextOptions':
@@ -126,7 +127,8 @@ class SocaContext(SocaContextProtocol):
                     module_id=options.module_id,
                     module_set=options.module_set,
                     aws_profile=options.aws_profile,
-                    create_subscription=True
+                    create_subscription=True,
+                    aws_client_endpoints=options.aws_client_endpoints
                 )
 
                 self._logging = SocaLogging(config=self._config, module_id=options.module_id)

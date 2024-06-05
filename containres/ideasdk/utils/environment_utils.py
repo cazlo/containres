@@ -94,3 +94,43 @@ class EnvironmentUtils:
             required=required,
             default=default
         )
+
+    @staticmethod
+    def s3_endpoint(required=False, default=None):
+        return EnvironmentUtils.get_environment_variable(
+            key='S3_ENDPOINT_URL',
+            required=required,
+            default=default
+        )
+
+    @staticmethod
+    def dynamodb_endpoint(required=False, default=None):
+        return EnvironmentUtils.get_environment_variable(
+            key='DYNAMODB_ENDPOINT_URL',
+            required=required,
+            default=default
+        )
+
+    @staticmethod
+    def sqs_endpoint(required=False, default=None):
+        return EnvironmentUtils.get_environment_variable(
+            key='SQS_ENDPOINT_URL',
+            required=required,
+            default=default
+        )
+
+    @staticmethod
+    def cognito_endpoint(required=False, default=None):
+        return EnvironmentUtils.get_environment_variable(
+            key='COGNITO_ENDPOINT_URL',
+            required=required,
+            default=default
+        )
+
+    @staticmethod
+    def kinesis_endpoint(required=False, default=None):
+        return EnvironmentUtils.get_environment_variable(
+            key='KINESIS_ENDPOINT_URL',
+            required=required,
+            default=default
+        )
