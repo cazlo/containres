@@ -20,7 +20,7 @@ from containres.ideadatamodel import (
     SocaUserInputChoice
 )
 from containres.ideadatamodel.constants import CLICK_SETTINGS
-from containres.ideasdk.utils import Utils, ModuleMetadataHelper
+from containres.ideasdk.utils import Utils, ModuleMetadataHelper, EnvironmentUtils
 from containres.ideasdk.user_input.framework import (
     SocaUserInputParamRegistry,
     SocaUserInputArgs
@@ -156,7 +156,7 @@ def config_generate(values_file: str, config_dir: str, force: bool, existing_res
     """
 
     context = SocaCliContext(
-        options=SocaContextOptions(enable_aws_client_provider=True)
+        options=SocaContextOptions(enable_aws_client_provider=True, aws_client_endpoints=get_aws_endpoints())
     )
 
     if config_dir is not None:
@@ -278,13 +278,14 @@ def save_values(cluster_name: str, aws_profile: str, aws_region: str, values_fil
     """
 
     context = SocaCliContext(
-        options=SocaContextOptions(enable_aws_client_provider=True)
+        options=SocaContextOptions(enable_aws_client_provider=True, aws_client_endpoints = get_aws_endpoints())
     )
 
     cluster_config_db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints()
     )
 
     bucket_name = get_bucket_name(cluster_name, aws_region, cluster_config_db, context)
@@ -392,7 +393,8 @@ def config_update(cluster_name: str, aws_profile: str, aws_region: str, force: b
         aws_region=config_generator.get_aws_region(),
         aws_profile=config_generator.get_aws_profile(),
         dynamodb_kms_key_id=local_config_dynamodb_kms_key_id,
-        create_database=True
+        create_database=True,
+        aws_client_endpoints = get_aws_endpoints()
     )
     if config_dir:
         modules = config_generator.read_modules_from_files(cluster_config_dir)
@@ -536,11 +538,11 @@ def set_config(cluster_name: str, aws_profile: str, aws_region: str, force: bool
         if not confirm:
             context.info('Abort!')
             raise SystemExit
-
     db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints()
     )
     for config_entry in config_entries:
         db.set_config_entry(config_entry['key'], config_entry['value'])
@@ -577,7 +579,8 @@ def export_config(cluster_name: str, aws_profile: str, aws_region: str, export_d
     db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints()
     )
     print(f'exporting config from db to {export_dir} ...')
     os.makedirs(export_dir, exist_ok=True)
@@ -621,13 +624,14 @@ def download_values(cluster_name: str, aws_profile: str, aws_region: str, values
     """
 
     context = SocaCliContext(
-        options=SocaContextOptions(enable_aws_client_provider=True)
+        options=SocaContextOptions(enable_aws_client_provider=True, aws_client_endpoints = get_aws_endpoints())
     )
 
     cluster_config_db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints()
     )
 
     values_diff = ValuesDiff(cluster_name, aws_region)
@@ -669,7 +673,8 @@ def diff_config(cluster_name: str, aws_profile: str, aws_region: str, config_dir
     db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints()
     )
 
     db_config_entries = {}
@@ -736,7 +741,8 @@ def show_config(cluster_name: str, aws_profile: str, aws_region: str, query: str
     cluster_config_db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints()
     )
     if output_format == 'yaml':
         cluster_config = cluster_config_db.build_config_from_db(query=query)
@@ -780,7 +786,8 @@ def delete_config(cluster_name: str, aws_profile: str, aws_region: str, config_k
     db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints = get_aws_endpoints()
     )
     for config_key_prefix in config_key_prefixes:
         config_key_prefix = config_key_prefix.strip()
@@ -803,7 +810,8 @@ def bootstrap_cluster(cluster_name: str, aws_profile: str, aws_region: str, term
     db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints(),
     )
 
     cluster_s3_bucket = db.get_cluster_s3_bucket()
@@ -1035,7 +1043,8 @@ def check_cluster_status(cluster_name: str, aws_region: str, aws_profile: str, w
         cluster_name=cluster_name,
         aws_region=aws_region,
         aws_profile=aws_profile,
-        module_set=module_set
+        module_set=module_set,
+        aws_client_endpoints=get_aws_endpoints(),
     )
 
     context = SocaCliContext()
@@ -1150,7 +1159,8 @@ def list_modules(cluster_name: str, aws_region: str, aws_profile: str):
     db = ClusterConfigDB(
         cluster_name=cluster_name,
         aws_region=aws_region,
-        aws_profile=aws_profile
+        aws_profile=aws_profile,
+        aws_client_endpoints=get_aws_endpoints(),
     )
     modules = db.get_cluster_modules()
     table = PrettyTable(['Title', 'Name', 'Module ID', 'Type', 'Stack Name', 'Version', 'Status'])
@@ -1181,7 +1191,8 @@ def show_connection_info(cluster_name: str, aws_region: str, aws_profile: str, m
         cluster_name=cluster_name,
         aws_region=aws_region,
         aws_profile=aws_profile,
-        module_set=module_set
+        module_set=module_set,
+        aws_client_endpoints=get_aws_endpoints(),
     )
 
     connection_info_entries = []
@@ -1791,6 +1802,16 @@ main.add_command(support)
 main.add_command(directoryservice)
 main.add_command(shared_storage)
 
+
+def get_aws_endpoints():
+    aws_client_endpoints = {
+        "s3": EnvironmentUtils.s3_endpoint(required=False),
+        "dynamodb": EnvironmentUtils.dynamodb_endpoint(required=False),
+        "sqs": EnvironmentUtils.sqs_endpoint(required=False),
+        "cognito": EnvironmentUtils.cognito_endpoint(required=False),
+        "kinesis": EnvironmentUtils.kinesis_endpoint(required=False),
+    }
+    return aws_client_endpoints
 
 def main_wrapper():
     success = True

@@ -33,11 +33,11 @@ class AdministratorProps:
     @property
     def dev_mode_admin_root_dir(self) -> str:
         script_dir = Path(os.path.abspath(__file__))
-        return str(script_dir.parent.parent.parent)
+        return str(script_dir.parent)
 
     @property
     def dev_mode_admin_app_source_dir(self) -> str:
-        return os.path.join(self.dev_mode_admin_root_dir, 'src')
+        return os.path.join(self.dev_mode_admin_root_dir, 'app')
 
     @property
     def dev_mode_resources_dir(self) -> str:
@@ -83,7 +83,7 @@ class AdministratorProps:
         if self.is_dev_mode():
             return self.dev_mode_resources_dir
         else:
-            return os.path.join(self.soca_admin_dir, 'resources')
+            return self.dev_mode_resources_dir #os.path.join(self.soca_admin_dir, 'resources')
 
     @property
     def bootstrap_source_dir(self) -> str:

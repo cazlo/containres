@@ -111,6 +111,36 @@ services:
     entrypoint: /bin/sh
     command:
       - ./localstack-deploy.sh
+  config-bootstrapper:
+    image: containres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: config-bootstrapper
+    depends_on:
+      terraform:
+        condition: service_completed_successfully
+    environment:
+      - IDEA_CLUSTER_NAME=res-dev
+      - IDEA_MODULE_ID=admin
+      - IDEA_MODULE_SET=app,config
+      - AWS_DEFAULT_REGION=us-west-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - S3_ENDPOINT_URL=http://localstack:4566
+      - DYNAMODB_ENDPOINT_URL=http://localstack:4566
+      - KINESIS_ENDPOINT_URL=http://localstack:4566
+      - SQS_ENDPOINT_URL=http://localstack:4566
+      - COGNITO_ENDPOINT_URL=http://localstack:4566
+      - RES_TEST_MODE=True
+    #      - LANG=en_US.UTF-8
+    #      - LANGUAGE=en_US:en
+    #      - LC_ALL=en_US.UTF-8
+    command: ["sleep", "3600"] #todo [ "poetry", "run", "res-admin" ]
+    # mkdir /home/appuser/config
+    # poetry run res-admin config generate --config-dir /home/appuser/config --values-file /app/containres/ideaadministrator/resources/config/values.yml
+    # poetry run res-admin config update --cluster-name res-dev --aws-region us-west-1 --config-dir /home/appuser/config
+
 #  tests:
 #    image: containres:latest
 #    build:

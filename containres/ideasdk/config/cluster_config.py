@@ -31,7 +31,7 @@ class ClusterConfig(SocaConfig, DynamoDBStreamSubscriber):
                  module_set: Optional[str] = None,
                  aws_profile: Optional[str] = None,
                  create_subscription: bool = False,
-                 aws_client_endpoints: Optional[Dict[str, str]] = None,
+                 aws_client_endpoints: Optional[Dict[str, str]] = {},
                  logger=None):
 
         if Utils.is_empty(cluster_name):
@@ -47,7 +47,6 @@ class ClusterConfig(SocaConfig, DynamoDBStreamSubscriber):
         self.logger = logger
 
         self.module_info = None
-        # todo need to inject endpoint url below for dynamodb
         self.db = ClusterConfigDB(
             cluster_name=cluster_name,
             aws_region=aws_region,

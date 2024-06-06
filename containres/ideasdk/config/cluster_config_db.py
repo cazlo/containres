@@ -50,7 +50,7 @@ class ClusterConfigDB(DynamoDBStreamSubscriber):
                  create_database: bool = False,
                  create_subscription: bool = False,
                  cluster_config_subscriber: Optional[DynamoDBStreamSubscriber] = None,
-                 aws_client_endpoints: Optional[Dict[str, str]] = None,
+                 aws_client_endpoints: Optional[Dict[str, str]] = {},
                  logger=None):
 
         self.logger = logger
