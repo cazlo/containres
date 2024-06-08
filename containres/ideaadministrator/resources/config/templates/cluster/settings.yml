@@ -145,7 +145,7 @@ ebs:
 
 solution:
   # Enable to disable IDEA Anonymous Metric Collection.
-  enable_solution_metrics: true
+  enable_solution_metrics: false
   custom_anonymous_metric_entry: ~ # Add a string to be automatically sent as "Misc" entry for Anonymous Metrics.
 
 iam:
