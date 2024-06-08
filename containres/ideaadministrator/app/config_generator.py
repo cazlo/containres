@@ -120,7 +120,7 @@ class ConfigGenerator:
         return value
 
     def get_use_vpc_endpoints(self) -> bool:
-        return Utils.get_value_as_bool('use_vpc_endpoints', self.user_values, False)
+        return Utils.get_value_as_bool('use_vpc_endpoints', self.user_values, True)
 
     def get_alb_public(self) -> bool:
         return Utils.get_value_as_bool('alb_public', self.user_values, True)
