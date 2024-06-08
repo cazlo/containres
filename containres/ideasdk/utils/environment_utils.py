@@ -134,3 +134,11 @@ class EnvironmentUtils:
             required=required,
             default=default
         )
+
+    @staticmethod
+    def secretsmanager_endpoint(required=False, default=None):
+        return EnvironmentUtils.get_environment_variable(
+            key='SECRETS_MANAGER_ENDPOINT_URL',
+            required=required,
+            default=default
+        )

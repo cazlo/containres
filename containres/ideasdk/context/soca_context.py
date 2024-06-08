@@ -179,6 +179,16 @@ class SocaContext(SocaContextProtocol):
                             service_name=service_name,
                             endpoint_url=endpoint_url
                         ))
+                    # todo may want to merge with the input endpoints to this fn instead of just add
+                    if options.aws_client_endpoints is not None:
+                        for service_name in options.aws_client_endpoints.keys():
+                            endpoint_url = options.aws_client_endpoints[service_name]
+                            if Utils.is_empty(endpoint_url):
+                                continue
+                            endpoints.append(AwsServiceEndpoint(
+                                service_name=service_name,
+                                endpoint_url=endpoint_url
+                            ))
 
                 self._aws = AwsClientProvider(
                     options=AWSClientProviderOptions(

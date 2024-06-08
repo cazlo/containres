@@ -30,5 +30,7 @@ cognito:
     reply_to_address: ~
   # to enable SSO, run ./res-admin.sh sso configure. do not modify this configuration to true to enable SSO.
   sso_enabled: false
+  domain_url: http://localstack:4566
+  provider_url: http://localstack:4566
 
 {%- endif %}

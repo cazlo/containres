@@ -3,7 +3,7 @@ all:
 
 .PHONY: build
 build:
-	$(MAKE) -j6 build-app build-test build-webapp build-test-webapp build-dcv-broker build-dcv-gateway
+	$(MAKE) -j5 build-app build-test build-test-webapp build-dcv-broker build-dcv-gateway
 
 .PHONY: build-app
 build-app:
@@ -13,9 +13,9 @@ build-app:
 build-test:
 	docker build -f infra/python-backend-test.Dockerfile -t containres-test .
 
-.PHONY: build-webapp
-build-webapp:
-	docker build -f infra/webapp.Dockerfile -t  containres-webapp webapp
+#.PHONY: build-webapp
+#build-webapp:
+	#docker build -f infra/webapp.Dockerfile -t  containres-webapp webapp
 
 .PHONY: build-test-webapp
 build-test-webapp:
@@ -51,9 +51,15 @@ run-test-shell:
 run-webapp-dev:
 	docker run -it --rm -p3000:3000 -v /home/drew/src/containres/webapp/src:/app/src --entrypoint /bin/bash containres-webapp-test
 
-.PHONY: run-webapp
-run-webapp:
-	docker run --rm -p8080:80 containres-webapp
+#.PHONY: run-webapp
+#run-webapp:
+	#docker run --rm -p8080:80 containres-webapp
 
 run:
 	docker compose -f infra/docker-compose.yaml up
+
+run-daemon:
+	docker compose -f infra/docker-compose.yaml up -d
+
+stop:
+	docker compose -f infra/docker-compose.yaml down

@@ -36,3 +36,11 @@ provider "aws" {
 module "config_table" {
   source = "../../module/dynamodb"
 }
+
+module "secretsmanager" {
+  source = "../../module/secretsmanager"
+}
+
+module "sqs" {
+  source = "../../module/sqs"
+}

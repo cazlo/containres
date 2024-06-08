@@ -649,7 +649,7 @@ class SocaServer(SocaService):
             )
             self.apply_sanic_extensions(self._unix_app)
 
-        if self.options.enable_metrics:
+        if False:  # todo self.options.enable_metrics:
             if not Utils.is_file(self.metrics_api_token_file):
                 with open(self.metrics_api_token_file, 'w') as f:
                     f.write(Utils.uuid())

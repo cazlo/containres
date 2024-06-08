@@ -7,15 +7,18 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: cluster-manager
-#    ports: todo
-#      - 8080:8080
+    ports:
+      - 9443:8443
     depends_on:
       terraform:
+        condition: service_completed_successfully
+      config-bootstrapper:
         condition: service_completed_successfully
     environment:
       - IDEA_CLUSTER_NAME=res-dev
       - IDEA_MODULE_ID=cluster-manager
-      - IDEA_MODULE_SET=app,config
+      - IDEA_MODULE_SET=default
+      - IDEA_APP_DEPLOY_DIR=/opt/idea/app/containres/deploy
       - AWS_DEFAULT_REGION=us-west-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
@@ -24,28 +27,33 @@ services:
       - KINESIS_ENDPOINT_URL=http://localstack:4566
       - SQS_ENDPOINT_URL=http://localstack:4566
       - COGNITO_ENDPOINT_URL=http://localstack:4566
+      - SECRETS_MANAGER_ENDPOINT_URL=http://localstack:4566
 #      - LANG=en_US.UTF-8
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
-    command: ["poetry", "run", "resserver-ideaclustermanager"]
+    command: ["./run-python-backend-app.sh", "resserver-ideaclustermanager"]
+#    command: ["sleep", "3600"]
+    volumes:
+      - certs:/internal/res-dev/certs
   virtual-desktop-controller:
     image: containres:latest
     build:
       context: .
       dockerfile: Dockerfile
     container_name: containres-virtual-desktop-controller
-#    ports: todo
-#      - 8080:8080
+    ports:
+      - 10443:8443
     depends_on:
       terraform:
         condition: service_completed_successfully
       cluster-manager:
-#        condition: service_healthy todo
-        condition: service_started
+        condition: service_healthy
+#        condition: service_started
     environment:
       - IDEA_CLUSTER_NAME=res-dev
-      - IDEA_MODULE_ID=virtual-desktop-controller
-      - IDEA_MODULE_SET=app,config
+      - IDEA_MODULE_ID=vdc
+      - IDEA_MODULE_SET=default
+      - IDEA_APP_DEPLOY_DIR=/opt/idea/app/containres/deploy
       - AWS_DEFAULT_REGION=us-west-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
@@ -54,10 +62,13 @@ services:
       - KINESIS_ENDPOINT_URL=http://localstack:4566
       - SQS_ENDPOINT_URL=http://localstack:4566
       - COGNITO_ENDPOINT_URL=http://localstack:4566
+      - SECRETS_MANAGER_ENDPOINT_URL=http://localstack:4566
 #      - LANG=en_US.UTF-8
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
-    command: ["poetry", "run", "resserver-ideavirtualdesktopcontroller"]
+    command: ["./run-python-backend-app.sh", "resserver-ideavirtualdesktopcontroller"]
+    volumes:
+      - certs:/internal/res-dev/certs
 #########    backend DCV services   #########
   dcv-broker:
     image: dcv-broker:latest
@@ -74,16 +85,16 @@ services:
       - dcv-broker
 
 #########   UI   #########
-  cluster-manager-frontend:
-    image: containres-webapp:latest
-    build:
-      context: webapp
-      dockerfile: webapp/Dockerfile
-#    environment:
-#      - RES_TEST_MODE=True
-    container_name: containres-webapp
-    ports:
-      - 8080:80
+#  cluster-manager-frontend:
+#    image: containres-webapp:latest
+#    build:
+#      context: webapp
+#      dockerfile: webapp/Dockerfile
+##    environment:
+##      - RES_TEST_MODE=True
+#    container_name: containres-webapp
+#    ports:
+#      - 8080:80
 
 #########   AWS emulation   #########
 #  dynamodb-local:
@@ -95,8 +106,9 @@ services:
       - "4566:4566"  # LocalStack gateway
       - "4510-4559:4510-4559"  # external svc range
     environment:
-      - SERVICES=s3,dynamodb,sqs,cognito,cloudwatch,secretsmanager,efs,iam
-      - DEBUG=1
+      - SERVICES=s3,dynamodb,sqs,cognito,cloudwatch,secretsmanager,efs,iam,sns
+      - PERSISTENCE=1
+#      - DEBUG=1
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -136,10 +148,10 @@ services:
     #      - LANG=en_US.UTF-8
     #      - LANGUAGE=en_US:en
     #      - LC_ALL=en_US.UTF-8
-    command: ["sleep", "3600"] #todo [ "poetry", "run", "res-admin" ]
-    # mkdir /home/appuser/config
-    # poetry run res-admin config generate --config-dir /home/appuser/config --values-file /app/containres/ideaadministrator/resources/config/values.yml
-    # poetry run res-admin config update --cluster-name res-dev --aws-region us-west-1 --config-dir /home/appuser/config
+    volumes:
+      - certs:/internal/res-dev/certs
+      - "./terraform:/workspace"
+    command: ["/opt/idea/app/cluster-config-setup.sh"]
 
 #  tests:
 #    image: containres:latest
@@ -152,3 +164,6 @@ services:
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
 #    command: ["poetry", "run", "pytest"]
+
+volumes:
+  certs:

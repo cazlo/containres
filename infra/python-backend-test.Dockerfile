@@ -9,7 +9,7 @@ RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 RUN groupadd -r appuser && useradd -m -r -g appuser appuser
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /opt/idea/app
 
 # Install Poetry
 RUN pip install poetry
@@ -31,7 +31,7 @@ COPY containres containres
 COPY tests tests
 
 # Change ownership of the application directory to the non-root user
-RUN chown -R appuser:appuser /app
+RUN chown -R appuser:appuser /opt/idea/app
 
 # Switch to the non-root user
 USER appuser

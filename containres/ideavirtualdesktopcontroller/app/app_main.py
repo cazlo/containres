@@ -40,10 +40,10 @@ def main(**kwargs):
             "s3": EnvironmentUtils.s3_endpoint(required=False),
             "dynamodb": EnvironmentUtils.dynamodb_endpoint(required=False),
             "sqs": EnvironmentUtils.sqs_endpoint(required=False),
-            "cognito": EnvironmentUtils.cognito_endpoint(required=False),
+            "cognito-idp": EnvironmentUtils.cognito_endpoint(required=False),
             "kinesis": EnvironmentUtils.kinesis_endpoint(required=False),
+            "secretsmanager": EnvironmentUtils.secretsmanager_endpoint(required=False),
         }
-        # todo add some flag here to create the DB if not exist using some config file as default values
 
         VirtualDesktopControllerApp(
             context=containres.ideavirtualdesktopcontroller.AppContext(
