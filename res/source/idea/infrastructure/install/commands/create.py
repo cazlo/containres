@@ -29,6 +29,7 @@ class Create:
         return [
             f"{EXE} --version",
             f"{EXE} config show {self._get_suffix()}",
+            # todo these 3 need to be emulated in TF
             *self._config(),
             *self._bootstrap(),
             *self._deploy(),
