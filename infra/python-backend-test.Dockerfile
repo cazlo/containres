@@ -4,6 +4,10 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # os patch
 RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+# install deps for python-ldap
+RUN apt-get update && apt-get install -y build-essential ldap-utils libldap2-dev libsasl2-dev uuid jq && rm -rf /var/lib/apt/lists/*
+# install deps for dynamodb local
+RUN apt-get update && apt-get install -y default-jre-headless && rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user and group
 RUN groupadd -r appuser && useradd -m -r -g appuser appuser
@@ -13,33 +17,24 @@ WORKDIR /opt/idea/app
 
 # Install Poetry
 RUN pip install poetry
-
-# install deps for python-ldap
-RUN apt-get update && apt-get install -y build-essential ldap-utils libldap2-dev libsasl2-dev&& rm -rf /var/lib/apt/lists/*
-# install deps for dynamodb local
-RUN apt-get update && apt-get install -y default-jre-headless && rm -rf /var/lib/apt/lists/*
-
-# Copy the pyproject.toml and poetry.lock files to the container
+# Install third party dependencies before copying source code for faster local rebuilds
 COPY pyproject.toml poetry.lock ./
-
-# Install dependencies using Poetry
-RUN poetry install --no-root
+RUN poetry config virtualenvs.create false && \
+ poetry install --no-root
 
 # Copy the rest of the application code to the container
-COPY README.md README.md
-COPY containres containres
-COPY tests tests
+COPY --chown=appuser:appuser README.md /opt/idea/app/
+COPY --chown=appuser:appuser containres /opt/idea/app/containres
+COPY --chown=appuser:appuser tests /opt/idea/app/tests
+# Install the application itself
+RUN poetry config virtualenvs.create false && \
+ poetry install
 
 # Change ownership of the application directory to the non-root user
 RUN chown -R appuser:appuser /opt/idea/app
-
 # Switch to the non-root user
 USER appuser
-
-# Install the application itself
-RUN poetry install
-
-
+RUN poetry config virtualenvs.create false
 # Generate the desired locale
 #RUN locale-gen en_US.UTF-8
 

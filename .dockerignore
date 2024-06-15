@@ -1,0 +1,7 @@
+Makefile
+LICENSE
+.gitignore
+res
+python-backend.Dockerfile*
+infra/*.Dockerfile
+docker-compose.yaml

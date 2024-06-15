@@ -7,11 +7,11 @@ build:
 
 .PHONY: build-app
 build-app:
-	docker build -f infra/python-backend.Dockerfile -t containres .
+	docker build --progress=plain -f infra/python-backend.Dockerfile -t containres .
 
 .PHONY: build-test
 build-test:
-	docker build -f infra/python-backend-test.Dockerfile -t containres-test .
+	docker build --progress=plain -f infra/python-backend-test.Dockerfile -t containres-test .
 
 #.PHONY: build-webapp
 #build-webapp:
@@ -19,15 +19,15 @@ build-test:
 
 .PHONY: build-test-webapp
 build-test-webapp:
-	docker build -f infra/webapp-dev.Dockerfile -t containres-webapp-test webapp
+	docker build --progress=plain -f infra/webapp-dev.Dockerfile -t containres-webapp-test webapp
 
 .PHONY: build-dcv-broker
 build-dcv-broker:
-	docker build -f infra/dcv-broker.Dockerfile -t  dcv-broker infra/dcv-config
+	docker build --progress=plain -f infra/dcv-broker.Dockerfile -t  dcv-broker infra/dcv-config
 
 .PHONY: build-dcv-gateway
 build-dcv-gateway:
-	docker build -f infra/dcv-gateway.Dockerfile -t  dcv-gateway infra/dcv-config
+	docker build --progress=plain -f infra/dcv-gateway.Dockerfile -t  dcv-gateway infra/dcv-config
 
 
 .PHONY: test
