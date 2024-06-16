@@ -3,7 +3,7 @@ all:
 
 .PHONY: build
 build:
-	$(MAKE) -j5 build-app build-test build-test-webapp build-dcv-broker build-dcv-gateway
+	$(MAKE) -j6 build-app build-test build-test-webapp build-dcv-broker build-dcv-gateway build-docs
 
 .PHONY: build-app
 build-app:
@@ -29,6 +29,10 @@ build-dcv-broker:
 build-dcv-gateway:
 	docker build --progress=plain -f infra/dcv-gateway.Dockerfile -t  dcv-gateway infra/dcv-config
 
+.PHONY: build-docs
+build-docs:
+	cd docs && \
+	docker build --progress=plain -f ../infra/docs.Dockerfile -t  containres-docs .
 
 .PHONY: test
 test:
@@ -60,6 +64,12 @@ run:
 
 run-daemon:
 	docker compose -f infra/docker-compose.yaml up -d
+
+run-docs:
+	cd docs && docker run -p 8000:8000 -it -v $(shell pwd)/docs:/opt/app/docs containres-docs /bin/bash
+
+run-docs-live-reload:
+	cd docs && docker run -p 8000:8000 -v $(shell pwd)/docs:/opt/app/docs containres-docs mkdocs serve -a 0.0.0.0:8000
 
 stop:
 	docker compose -f infra/docker-compose.yaml down
