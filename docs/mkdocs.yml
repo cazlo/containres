@@ -1,0 +1,51 @@
+site_name: Containres Architecture Documentation
+repo_url: https://github.com/cazlo/containres
+extra_css:
+  - adr_theme/css/adr.css
+theme:
+  name: material
+  custom_dir: adr_theme
+  palette:
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - plantuml_markdown
+  - pymdownx.superfences:
+        # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+plugins:
+  - search
+  - mermaid2
+  - blog:
+      enabled: false
+  - group:
+      enabled: false
+      plugins: []
+  - offline
+#  - search
+  - social:
+      enabled: false
+  - tags
+  - privacy:
+      # to pull external scripts and assets like fonts automagically and self-host it instead
+      enabled: true
+

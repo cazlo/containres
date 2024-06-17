@@ -11,6 +11,7 @@
 
 import containres.ideaclustermanager
 import containres.ideaclustermanager.app.app_messages as app_messages
+from containres import ideaclustermanager
 
 from containres.ideasdk.utils import Utils, EnvironmentUtils, Jinja2Utils, ModuleMetadataHelper
 from containres.ideasdk.server import SocaServer

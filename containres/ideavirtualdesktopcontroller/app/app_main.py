@@ -36,6 +36,14 @@ def main(**kwargs):
         module_id = EnvironmentUtils.idea_module_id(required=True)
         module_set = EnvironmentUtils.idea_module_set(required=True)
         aws_region = EnvironmentUtils.aws_default_region(required=True)
+        aws_client_endpoints = {
+            "s3": EnvironmentUtils.s3_endpoint(required=False),
+            "dynamodb": EnvironmentUtils.dynamodb_endpoint(required=False),
+            "sqs": EnvironmentUtils.sqs_endpoint(required=False),
+            "cognito-idp": EnvironmentUtils.cognito_endpoint(required=False),
+            "kinesis": EnvironmentUtils.kinesis_endpoint(required=False),
+            "secretsmanager": EnvironmentUtils.secretsmanager_endpoint(required=False),
+        }
 
         VirtualDesktopControllerApp(
             context=containres.ideavirtualdesktopcontroller.AppContext(
@@ -55,6 +63,7 @@ def main(**kwargs):
                     enable_leader_election=True,
                     enable_metrics=True,
                     metrics_namespace=f'{cluster_name}/{module_id}/controller',
+                    aws_client_endpoints=aws_client_endpoints,
                 )
             ),
             **kwargs

@@ -31,6 +31,7 @@ class ClusterConfig(SocaConfig, DynamoDBStreamSubscriber):
                  module_set: Optional[str] = None,
                  aws_profile: Optional[str] = None,
                  create_subscription: bool = False,
+                 aws_client_endpoints: Optional[Dict[str, str]] = {},
                  logger=None):
 
         if Utils.is_empty(cluster_name):
@@ -52,7 +53,8 @@ class ClusterConfig(SocaConfig, DynamoDBStreamSubscriber):
             aws_profile=aws_profile,
             create_subscription=create_subscription,
             cluster_config_subscriber=self,
-            logger=logger
+            logger=logger,
+            aws_client_endpoints=aws_client_endpoints,
         )
 
         self.module_set = module_set

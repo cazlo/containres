@@ -16,7 +16,7 @@ from containres.ideasdk.utils import Utils, ModuleMetadataHelper
 from containres.ideasdk.config.soca_config import SocaConfig
 from containres.ideasdk.dynamodb.dynamodb_stream_subscriber import DynamoDBStreamSubscriber
 from containres.ideasdk.dynamodb.dynamodb_stream_subscription import DynamoDBStreamSubscription
-from containres.ideasdk.aws import AwsClientProvider, AWSClientProviderOptions
+from containres.ideasdk.aws import AwsClientProvider, AWSClientProviderOptions, AwsServiceEndpoint
 
 from datetime import datetime
 import time
@@ -42,7 +42,16 @@ class ClusterConfigDB(DynamoDBStreamSubscriber):
         * implementation from AwsUtil.dynamodb_create_table() cannot be used in this class and tables must be created manually
     """
 
-    def __init__(self, cluster_name: str, aws_region: str, aws_profile: Optional[str], dynamodb_kms_key_id: Optional[str] = None, create_database: bool = False, create_subscription: bool = False, cluster_config_subscriber: Optional[DynamoDBStreamSubscriber] = None, logger=None):
+    def __init__(self,
+                 cluster_name: str,
+                 aws_region: str,
+                 aws_profile: Optional[str],
+                 dynamodb_kms_key_id: Optional[str] = None,
+                 create_database: bool = False,
+                 create_subscription: bool = False,
+                 cluster_config_subscriber: Optional[DynamoDBStreamSubscriber] = None,
+                 aws_client_endpoints: Optional[Dict[str, str]] = {},
+                 logger=None):
 
         self.logger = logger
 
@@ -63,11 +72,20 @@ class ClusterConfigDB(DynamoDBStreamSubscriber):
         self.dynamodb_kms_key_id = dynamodb_kms_key_id
         self.module_metadata_helper = ModuleMetadataHelper()
 
+        endpoints = []
+        for service_name in aws_client_endpoints.keys():
+            endpoint_url = aws_client_endpoints[service_name]
+            if Utils.is_empty(endpoint_url):
+                continue
+            endpoints.append(AwsServiceEndpoint(
+                service_name=service_name,
+                endpoint_url=endpoint_url
+            ))
         self.aws = AwsClientProvider(
             options=AWSClientProviderOptions(
                 region=self.aws_region,
-                profile=self.aws_profile
-                # todo need some way to specify endpoints here to support localstack style endpoint_url injection for local runtime/test case
+                profile=self.aws_profile,
+                endpoints=endpoints
             )
         )
 
@@ -101,7 +119,8 @@ class ClusterConfigDB(DynamoDBStreamSubscriber):
                 table_name=self.get_cluster_settings_table_name(),
                 table_kinesis_stream_name=self.get_cluster_settings_table_kinesis_stream_name(),
                 aws_region=aws_region,
-                aws_profile=aws_profile
+                aws_profile=aws_profile,
+                aws_client_provider=self.aws
             )
 
     def set_logger(self, logger):
@@ -299,13 +318,7 @@ class ClusterConfigDB(DynamoDBStreamSubscriber):
             StreamName=stream_name,
             StreamModeDetails={
                 'StreamMode': 'ON_DEMAND'
-            },
-            Tags=[
-                {
-                    'Key': constants.IDEA_TAG_ENVIRONMENT_NAME,
-                    'Value': self.cluster_name
-                }
-            ]
+            }
         )
 
         return self.get_kinesis_data_stream_for_db()

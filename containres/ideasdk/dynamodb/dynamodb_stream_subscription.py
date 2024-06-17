@@ -8,16 +8,13 @@
 #  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES
 #  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
 #  and limitations under the License.
-
-from containres.ideasdk.utils import Utils
+from containres.ideasdk.aws import AwsClientProvider
 from containres.ideasdk.dynamodb.dynamodb_stream_subscriber import DynamoDBStreamSubscriber
 import botocore.session
 import botocore.exceptions
-from botocore.config import Config
 from boto3.dynamodb.types import TypeDeserializer
 
 import json
-import os
 import threading
 from typing import Dict, Optional
 import time
@@ -33,7 +30,7 @@ class DynamoDBStreamSubscription:
     Create subscription for a DynamoDB Stream and Publish updates via DynamoDBStreamSubscriber protocol
     """
 
-    def __init__(self, stream_subscriber: DynamoDBStreamSubscriber, table_name: str, table_kinesis_stream_name: str, aws_region: str, aws_profile: Optional[str] = None, logger=None):
+    def __init__(self, stream_subscriber: DynamoDBStreamSubscriber, table_name: str, table_kinesis_stream_name: str, aws_region: str, aws_profile: Optional[str] = None, logger=None, aws_client_provider: AwsClientProvider = None):
 
         self.stream_subscriber = stream_subscriber
         self.table_name = table_name
@@ -42,15 +39,8 @@ class DynamoDBStreamSubscription:
         self.aws_profile = aws_profile
         self.logger = logger
 
-        # todo @kulkary - vpc endpoint support
-        self.boto_session = Utils.create_boto_session(self.aws_region, self.aws_profile)
-        config = None
-        https_proxy = os.environ.get('https_proxy')
-        if not Utils.is_empty(https_proxy):
-            proxy_definitions = {'https': https_proxy}
-            config = Config(proxies=proxy_definitions)
-        self.dynamodb_client = self.boto_session.client(service_name='dynamodb', region_name=self.aws_region)
-        self.kinesis_client = self.boto_session.client(service_name='kinesis', region_name=self.aws_region, config=config)
+        self.dynamodb_client = aws_client_provider.dynamodb()
+        self.kinesis_client = aws_client_provider.kinesis()
 
         self.ddb_type_deserializer = TypeDeserializer()
 

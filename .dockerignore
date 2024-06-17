@@ -1,0 +1,12 @@
+Makefile
+LICENSE
+.gitignore
+res
+python-backend.Dockerfile*
+infra/*.Dockerfile
+docker-compose.yaml
+docs
+
+# ignore .git and .cache folders
+.git
+.cache

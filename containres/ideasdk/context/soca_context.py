@@ -66,6 +66,7 @@ class SocaContextOptions(SocaBaseModel):
     locale: Optional[str]
 
     config: Optional[Dict[str, Any]]
+    aws_client_endpoints: Optional[Dict[str, str]]
 
     @staticmethod
     def default() -> 'SocaContextOptions':
@@ -119,13 +120,15 @@ class SocaContext(SocaContextProtocol):
                 if Utils.is_empty(options.module_set):
                     raise exceptions.invalid_params('module_set is required')
 
+                # todo here we should inject endpoint urls to cluster config
                 self._config = ClusterConfig(
                     cluster_name=options.cluster_name,
                     aws_region=options.aws_region,
                     module_id=options.module_id,
                     module_set=options.module_set,
                     aws_profile=options.aws_profile,
-                    create_subscription=True
+                    create_subscription=True,
+                    aws_client_endpoints=options.aws_client_endpoints
                 )
 
                 self._logging = SocaLogging(config=self._config, module_id=options.module_id)
@@ -176,6 +179,16 @@ class SocaContext(SocaContextProtocol):
                             service_name=service_name,
                             endpoint_url=endpoint_url
                         ))
+                    # todo may want to merge with the input endpoints to this fn instead of just add
+                    if options.aws_client_endpoints is not None:
+                        for service_name in options.aws_client_endpoints.keys():
+                            endpoint_url = options.aws_client_endpoints[service_name]
+                            if Utils.is_empty(endpoint_url):
+                                continue
+                            endpoints.append(AwsServiceEndpoint(
+                                service_name=service_name,
+                                endpoint_url=endpoint_url
+                            ))
 
                 self._aws = AwsClientProvider(
                     options=AWSClientProviderOptions(
