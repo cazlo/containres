@@ -1,11 +1,25 @@
 ---
 # These are optional elements. Feel free to remove any of them.
-status: "{proposed | rejected | accepted | deprecated | … | superseded by [ADR-0005](0005-example.md)}"
-date: {YYYY-MM-DD when the decision was last updated}
-decision-makers: {list everyone involved in the decision}
-consulted: {list everyone whose opinions are sought (typically subject-matter experts); and with whom there is a two-way communication}
-informed: {list everyone who is kept up-to-date on progress; and with whom there is a one-way communication}
+adr: true
+status: "{proposed | rejected | accepted | superseded by [ADR-0005](0005-example.md)}"
+# only if status = superseded:
+#superseded_by: "decisions/0000-use-markdown-any-decision-records.html"
+#base_for: 
+# - "decisions/0000-use-markdown-any-decision-records.html"
+#extends: 
+# - "decisions/0000-use-markdown-any-decision-records.html"
+
+date: "{YYYY-MM-DD when the decision was last updated}"
+decision-makers: 
+ - "{list everyone involved in the decision}"
+consulted: "{list everyone whose opinions are sought (typically subject-matter experts); and with whom there is a two-way communication}"
+informed: "{list everyone who is kept up-to-date on progress; and with whom there is a one-way communication}"
+
+tags:
+ - tag1
+ - tag2
 ---
+
 # Template: {short title of solved problem and solution}
 
 ## Context and Problem Statement

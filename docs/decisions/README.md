@@ -1,4 +1,4 @@
-# Decisions
+# About
 
 This directory contains decision records for containres.
 

@@ -34,3 +34,4 @@ RUN pip install mkdocs-material
 #RUN pip install mkdocs-print-site-plugin
 
 COPY mkdocs.yml .
+COPY adr_theme adr_theme

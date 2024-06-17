@@ -1,3 +1,12 @@
+---
+description: Use Markdown Architectural Decision Records
+adr: true
+status: "accepted"
+date: "2024-06-16"
+decision-makers: 
+  - "@cazlo (Drew Paettie)"
+---
+
 # 0000 Use Markdown Architectural Decision Records
 
 ## Context and Problem Statement

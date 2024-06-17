@@ -66,10 +66,14 @@ run-daemon:
 	docker compose -f infra/docker-compose.yaml up -d
 
 run-docs:
-	cd docs && docker run -p 8000:8000 -it -v $(shell pwd)/docs:/opt/app/docs containres-docs /bin/bash
+	cd docs && docker run -p 8000:8000 -it \
+		-v $(shell pwd)/docs:/opt/app/docs -v $(shell pwd)/docs/adr_theme:/opt/app/adr_theme \
+		containres-docs /bin/bash
 
 run-docs-live-reload:
-	cd docs && docker run -p 8000:8000 -v $(shell pwd)/docs:/opt/app/docs containres-docs mkdocs serve -a 0.0.0.0:8000
+	cd docs && docker run -p 8000:8000 \
+		-v $(shell pwd)/docs:/opt/app/docs -v $(shell pwd)/docs/adr_theme:/opt/app/adr_theme containres-docs \
+		mkdocs serve -a 0.0.0.0:8000
 
 stop:
 	docker compose -f infra/docker-compose.yaml down

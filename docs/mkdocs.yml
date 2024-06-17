@@ -1,7 +1,10 @@
 site_name: Containres Architecture Documentation
 site_url: http://localhost
+extra_css:
+  - adr_theme/css/adr.css
 theme:
   name: material
+  custom_dir: adr_theme
   palette:
 
     # Palette toggle for light mode
