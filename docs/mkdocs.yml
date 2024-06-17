@@ -1,5 +1,5 @@
 site_name: Containres Architecture Documentation
-site_url: http://localhost
+repo_url: https://github.com/cazlo/containres
 extra_css:
   - adr_theme/css/adr.css
 theme:
@@ -29,6 +29,9 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:mermaid2.fence_mermaid_custom
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
 plugins:
   - search
   - mermaid2

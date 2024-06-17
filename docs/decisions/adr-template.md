@@ -1,13 +1,14 @@
 ---
+title: ADR Template
 # These are optional elements. Feel free to remove any of them.
 adr: true
-status: "{proposed | rejected | accepted | superseded by [ADR-0005](0005-example.md)}"
+status: superseded # "{proposed | rejected | accepted | superseded by [ADR-0005](0005-example.md)}"
 # only if status = superseded:
-#superseded_by: "decisions/0000-use-markdown-any-decision-records.html"
-#base_for: 
-# - "decisions/0000-use-markdown-any-decision-records.html"
-#extends: 
-# - "decisions/0000-use-markdown-any-decision-records.html"
+superseded_by: "decisions/adr-template.html"
+base_for: 
+ - "decisions/adr-template.html"
+extends: 
+ - "decisions/adr-template.html"
 
 date: "{YYYY-MM-DD when the decision was last updated}"
 decision-makers: 
@@ -20,7 +21,7 @@ tags:
  - tag2
 ---
 
-# Template: {short title of solved problem and solution}
+# {short title of solved problem and solution}
 
 ## Context and Problem Statement
 
